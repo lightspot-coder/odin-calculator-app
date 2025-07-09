@@ -2,6 +2,8 @@ const container = document.querySelector("#container");
 const display = document.querySelector("#display");
 const buttons = document.querySelector("#buttons");
 const displayContent = document.createElement("p");
+const eraseButtons = document.querySelector("#eraseButtons");
+
 displayContent.setAttribute("id","displayContent");
 display.appendChild(displayContent);
 
@@ -9,7 +11,7 @@ let firstOperand = "";
 let secondOperand = "";
 let result = "";
 let operator = "";
-let displayContentIsEmpty = true;
+let currentDisplayOperand = 0;
 
 
 function sum(a,b){
@@ -32,6 +34,7 @@ function divide(a,b){
 function multiply(a,b){
     return `${+a * +b}`;
 }
+
 
 function operate(currentOperator, a, b){
     
@@ -60,13 +63,14 @@ function operate(currentOperator, a, b){
         else{
             console.log("Another operation")
         }
-        firstOperand = result; 
+        firstOperand = result;
         secondOperand = "";
         operator = "";
 
     }
     else{
         alert("something missing");
+
     }
      
     return result;
@@ -74,7 +78,7 @@ function operate(currentOperator, a, b){
 
 function showOnDisplay(num){
     
-   
+
     (document.getElementById("displayContent")).textContent = `${num}`;
     
 }
@@ -113,10 +117,12 @@ for(let i = 2; i >= 0; i--){
             if(operator === ""){
                 firstOperand = firstOperand + currentButton.getAttribute("value");
                 showOnDisplay(firstOperand);
+                currentDisplayOperand = 1;
             }
             else{
                 secondOperand = secondOperand + currentButton.getAttribute("value");
                 showOnDisplay(secondOperand);
+                currentDisplayOperand = 2;
             }
         
         });
@@ -135,11 +141,13 @@ document.getElementById(`button31`).addEventListener("click",() => {
     if(operator === ""){
         firstOperand = firstOperand + 0;
         showOnDisplay(firstOperand);
+        currentDisplayOperand = 1;
     }
         
     else{
         secondOperand = secondOperand + 0;
         showOnDisplay(secondOperand);
+        currentDisplayOperand = 2;
     }
     
 });
@@ -152,7 +160,12 @@ let textButton2 = document.createElement("p");
 textButton2.textContent = "/";
 document.getElementById(`button03`).appendChild(textButton2);
 document.getElementById(`button03`).setAttribute("name","button/");
-document.getElementById(`button03`).addEventListener("click",() => operator = "div");
+document.getElementById(`button03`).addEventListener("click",() => {
+
+     if(operator !== "")
+        showOnDisplay(operate(operator, firstOperand, secondOperand));
+    operator = "div";
+});
 
 // multiply button
 
@@ -160,7 +173,13 @@ let textButton3 = document.createElement("p");
 textButton3.textContent = "*";
 document.getElementById(`button13`).appendChild(textButton3);
 document.getElementById(`button13`).setAttribute("name","button*");
-document.getElementById(`button13`).addEventListener("click",() => operator = "mult");
+document.getElementById(`button13`).addEventListener("click",() =>{
+
+    if(operator !== "")
+        showOnDisplay(operate(operator, firstOperand, secondOperand));
+    operator = "mult";
+
+});
 
 // substract button
 
@@ -168,7 +187,12 @@ let textButton4 = document.createElement("p");
 textButton4.textContent = "-";
 document.getElementById(`button23`).appendChild(textButton4);
 document.getElementById(`button23`).setAttribute("name","button-");
-document.getElementById(`button23`).addEventListener("click",() => operator = "subs");
+document.getElementById(`button23`).addEventListener("click",() => {
+    
+    if(operator !== "")
+        showOnDisplay(operate(operator, firstOperand, secondOperand));
+    operator = "subs";
+});
 
 // addition buttons
 
@@ -176,7 +200,13 @@ let textButton5 = document.createElement("p");
 textButton5.textContent = "+";
 document.getElementById(`button33`).appendChild(textButton5);
 document.getElementById(`button33`).setAttribute("name","button+");
-document.getElementById(`button33`).addEventListener("click",() => operator = "sum");
+document.getElementById(`button33`).addEventListener("click",() => {
+
+    if(operator !== "")
+        showOnDisplay(operate(operator, firstOperand, secondOperand));
+    operator = "sum";
+
+});
 
 // '=' operator
 
@@ -196,4 +226,45 @@ document.getElementById(`button30`).setAttribute("name","button.");
 // getElementsByName return a array of nodes, where first element is the element itself in the DOM
 
 //console.log(document.getElementsByName("button.")[0]); 
+
+
+// create 2 buttons for erase all and delete 1 digit
+
+
+const allClearButton = document.createElement("button");
+allClearButton.textContent = "AC";
+allClearButton.classList.add("button");
+allClearButton.addEventListener("click",() => {
+
+        firstOperand = "";
+        secondOperand = "";
+        result = "";
+        operator = "";
+        currentDisplayOperand = 0;
+        showOnDisplay("");
+
+});
+
+const deleteDigitButton = document.createElement("button");
+deleteDigitButton.textContent = "DEL";
+deleteDigitButton.classList.add("button");
+deleteDigitButton.addEventListener("click",() => {
+   
+    
+    if(currentDisplayOperand === 1){
+        let aux = firstOperand.slice(0,-1);
+        firstOperand = aux;
+        showOnDisplay(firstOperand);
+    }
+    if(currentDisplayOperand === 2){
+        let aux = secondOperand.slice(0,-1);
+        secondOperand = aux;
+        showOnDisplay(secondOperand);
+    }
+    console.log(`inside deleteDigitButton event  firstOperand = ${firstOperand} secondOperand ${secondOperand}  `);
+});
+
+
+eraseButtons.appendChild(allClearButton);
+eraseButtons.appendChild(deleteDigitButton);
 

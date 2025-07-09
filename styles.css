@@ -22,6 +22,17 @@
     background-color: aqua;
     justify-items: flex-end;
 }
+
+#eraseButtons{
+    display: flex;
+    justify-items: flex-end;
+    width: 160px;
+    height: 40px;
+    border-style: solid;
+    border-width: thin;
+    border-color:black;
+    background-color: aqua;
+}
 #buttons{
 
     display: flex;
@@ -32,6 +43,7 @@
 .buttonRow{
     display: flex;
     justify-content: space-between;
+    
 }
 
 button{
