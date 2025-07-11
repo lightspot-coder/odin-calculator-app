@@ -5,13 +5,17 @@ const displayContent = document.createElement("p");
 const eraseButtons = document.querySelector("#eraseButtons");
 
 displayContent.setAttribute("id","displayContent");
+displayContent.setAttribute("style","font-size:200%;color:black;");
 display.appendChild(displayContent);
 
 let firstOperand = "";
 let secondOperand = "";
+let firstOperandLenght = 0;
+let secondOperandLenght = 0;
 let result = "";
 let operator = "";
 let currentDisplayOperand = 1;
+
 
 
 function sum(a,b){
@@ -50,39 +54,71 @@ function operate(currentOperator, a, b){
     else if(a !== "" && b === "" && currentOperator !== "=" ){
 
         console.log("waiting for the second operand");
+        operator = currentOperator;
         currentDisplayOperand = 2;
         return "";
     }
-    else if(a !== "" && b !== "" && currentOperator !== ""){
+    else if(a !== "" && b !== "" && operator !== "" && currentOperator !== ""){
+        
         
         if(operator === "sum"){
             console.log("calling sum function");
             result = sum(a,b);
 
         }
-        else if(operator === "subs"){
+        if(operator === "subs"){
             console.log("calling substract function");
             result = substract(a,b);
 
         }
-        else if(operator === "div"){
+        if(operator === "div"){
             console.log("calling divide function");
             result = divide(a,b);
         }
-        else if(operator === "mult"){
+        if(operator === "mult"){
             console.log("calling multiply function");
             result = multiply(a,b);
         }
-        else{
-            result = firstOperand;
+        if(currentOperator === "="){
+            console.log("normal operation with =operator");
+            firstOperand = result;
+            secondOperand = "";
+            secondOperandLenght = 0;
+            operator = "";
+            currentDisplayOperand = 1;
+            return result;
         }
         firstOperand = result;
         secondOperand = "";
-        operator = "";
+        secondOperandLenght = 0;
         currentDisplayOperand = 1;
+        operator = currentOperator;
+        currentDisplayOperand = 2;
+        console.log("chain operation, waiting for second number");
+        
 
     }
     return result;
+}
+
+function maxLenghtOfNumber(currentNumber, newDigit){
+
+
+    if(currentDisplayOperand === 1){
+        if(firstOperandLenght < 15){
+            firstOperandLenght += 1;
+            return currentNumber + newDigit;
+        }
+    }
+    if(currentDisplayOperand === 2){
+         if(secondOperandLenght < 15){
+            secondOperandLenght += 1;
+            return currentNumber + newDigit;
+        }
+    }
+    return currentNumber;
+
+
 }
 
 function showOnDisplay(num){
@@ -102,6 +138,7 @@ for(let i = 0; i < 4; i++){
 
         let button = document.createElement("button");
         button.setAttribute("id",`button${i}${j}`);
+        button.classList.add("button");
         buttonRow.appendChild(button);
     }
     buttons.appendChild(buttonRow);
@@ -113,12 +150,16 @@ let currentNumber = 1;
 for(let i = 2; i >= 0; i--){
     for(let j = 0; j < 3; j++){
 
-        let textButton = document.createElement("p");
-        textButton.textContent = currentNumber;
+        //let textButton = document.createElement("p");
+        //textButton.textContent = currentNumber;
+       // textButton.setAttribute("style","font-size:150%;");
+        //textButton.classList.add("buttonText");
         const currentButton = document.getElementById(`button${i}${j}`);
-        currentButton.appendChild(textButton);
+       
+        //currentButton.appendChild(textButton);
         currentButton.setAttribute("name",`button${currentNumber}`);
         currentButton.setAttribute("value",`${currentNumber}`);
+        currentButton.textContent = `${currentNumber}`;
         // making call to the event when select a number
 
         document.getElementById(`button${i}${j}`).addEventListener("click",() => {
@@ -126,14 +167,16 @@ for(let i = 2; i >= 0; i--){
             if(currentDisplayOperand === 1){
                 if(firstOperand === "0")
                     firstOperand = "";
-                firstOperand = firstOperand + currentButton.getAttribute("value");
+                //firstOperand = firstOperand + currentButton.getAttribute("value");
+                firstOperand = maxLenghtOfNumber(firstOperand,currentButton.getAttribute("value"));
                 showOnDisplay(firstOperand);
                 //currentDisplayOperand = 2;
             }
             if(currentDisplayOperand === 2){
                 if(secondOperand === "0")
                     secondOperand = "";
-                secondOperand = secondOperand + currentButton.getAttribute("value");
+                //secondOperand = secondOperand + currentButton.getAttribute("value");
+                secondOperand = maxLenghtOfNumber(secondOperand,currentButton.getAttribute("value"));
                 showOnDisplay(secondOperand);
                 //currentDisplayOperand = 1;
             }
@@ -145,22 +188,28 @@ for(let i = 2; i >= 0; i--){
 }
 
 // making text for button 0
-let textButton1 = document.createElement("p");
-textButton1.textContent = 0;
-document.getElementById(`button31`).appendChild(textButton1);
-document.getElementById(`button31`).setAttribute("name","button0")
-document.getElementById(`button31`).addEventListener("click",() => {
+//let textButton1 = document.createElement("p");
+//textButton1.textContent = 0;
+//textButton1.classList.add("button");
+let auxButton = document.getElementById(`button31`);
+auxButton.classList.add("button");
+auxButton.textContent = "0";
+//document.getElementById(`button31`).appendChild(textButton1);
+auxButton.setAttribute("name","button0")
+auxButton.addEventListener("click",() => {
 
     if(currentDisplayOperand === 1){
         if(firstOperand !== "0")
-            firstOperand = firstOperand + 0;
+            //firstOperand = firstOperand + 0;
+            firstOperand = maxLenghtOfNumber(firstOperand,"0");
         showOnDisplay(firstOperand);
         //currentDisplayOperand = 2;
     }
         
     if(currentDisplayOperand === 2){
          if(secondOperand !== "0")
-            secondOperand = secondOperand + 0;
+            //secondOperand = secondOperand + 0;
+            secondOperand = maxLenghtOfNumber(secondOperand,"0");
         showOnDisplay(secondOperand);
         //currentDisplayOperand = 1;
     }
@@ -172,85 +221,83 @@ document.getElementById(`button31`).addEventListener("click",() => {
 
 // divide button
 
-let textButton2 = document.createElement("p");
-textButton2.textContent = "/";
-document.getElementById(`button03`).appendChild(textButton2);
-document.getElementById(`button03`).setAttribute("name","button/");
-document.getElementById(`button03`).addEventListener("click",() => {
+auxButton = document.getElementById(`button03`);
+auxButton.classList.add("button");
+auxButton.setAttribute("name","button/");
+auxButton.classList.add("button");
+auxButton.textContent = "/";
+auxButton.addEventListener("click",() => {
 
      
-    operator = "div";
-    showOnDisplay(operate(operator, firstOperand, secondOperand));
+    //operator = "div";
+    showOnDisplay(operate("div", firstOperand, secondOperand));
     
 });
 
 // multiply button
 
-let textButton3 = document.createElement("p");
-textButton3.textContent = "*";
-document.getElementById(`button13`).appendChild(textButton3);
-document.getElementById(`button13`).setAttribute("name","button*");
-document.getElementById(`button13`).addEventListener("click",() =>{
+auxButton = document.getElementById(`button13`);
+auxButton.classList.add("button");
+auxButton.textContent = "*";
+auxButton.setAttribute("name","button*");
+auxButton.addEventListener("click",() =>{
 
-    operator = "mult";
-    showOnDisplay(operate(operator, firstOperand, secondOperand));
+    //operator = "mult";
+    showOnDisplay(operate("mult", firstOperand, secondOperand));
     
 
 });
 
 // substract button
 
-let textButton4 = document.createElement("p");
-textButton4.textContent = "-";
-document.getElementById(`button23`).appendChild(textButton4);
-document.getElementById(`button23`).setAttribute("name","button-");
-document.getElementById(`button23`).addEventListener("click",() => {
+auxButton = document.getElementById(`button23`);
+auxButton.classList.add("button");
+auxButton.textContent = "-";
+auxButton.setAttribute("name","button-");
+auxButton.addEventListener("click",() => {
     
-    operator = "subs";
-    showOnDisplay(operate(operator, firstOperand, secondOperand));
+    //operator = "subs";
+    showOnDisplay(operate("subs", firstOperand, secondOperand));
 });
 
 // addition buttons
-
-let textButton5 = document.createElement("p");
-textButton5.textContent = "+";
-document.getElementById(`button33`).appendChild(textButton5);
-document.getElementById(`button33`).setAttribute("name","button+");
-document.getElementById(`button33`).addEventListener("click",() => {
+auxButton = document.getElementById(`button33`);
+auxButton.classList.add("button");
+auxButton.textContent = "+";
+auxButton.setAttribute("name","button+");
+auxButton.addEventListener("click",() => {
 
     
-    operator = "sum";
-    showOnDisplay(operate(operator, firstOperand, secondOperand));
+    //operator = "sum";
+    showOnDisplay(operate("sum", firstOperand, secondOperand));
         
 
 });
 
 // '=' operator
 
-let textButton6 = document.createElement("p");
-textButton6.textContent = "=";
-document.getElementById(`button32`).appendChild(textButton6);
-document.getElementById(`button32`).setAttribute("name","button=");
-document.getElementById(`button32`).addEventListener("click",() => {
+auxButton = document.getElementById(`button32`);
+auxButton.classList.add("button");
+auxButton.textContent = "=";
+auxButton.setAttribute("name","button=");
+auxButton.addEventListener("click",() => {
     
     showOnDisplay(operate("=", firstOperand, secondOperand))
 });
 
 // decimal operator
 
-let textButton7 = document.createElement("p");
-textButton7.textContent = ".";
-document.getElementById(`button30`).appendChild(textButton7);
-document.getElementById(`button30`).setAttribute("name","button.");
-document.getElementById(`button30`).addEventListener("click",() => {
+auxButton = document.getElementById(`button30`);
+auxButton.classList.add("button");
+auxButton.textContent = ".";
+auxButton.setAttribute("name","button.");
+auxButton.addEventListener("click",() => {
 
-    if(currentDisplayOperand === 0){
-        console.log("inside firt if in decimal button");
-        firstOperand = "0.";
-        showOnDisplay(firstOperand);
-    }
+
     if(currentDisplayOperand === 1){
         if(!firstOperand.includes(".")){
+            if(firstOperand === "")
+                firstOperand = "0";
             firstOperand = firstOperand + ".";
             showOnDisplay(firstOperand);
         }
@@ -258,6 +305,8 @@ document.getElementById(`button30`).addEventListener("click",() => {
     }   
     if(currentDisplayOperand === 2){
         if(!secondOperand.includes(".")){
+            if(secondOperand === "")
+                secondOperand = "0";
             secondOperand = secondOperand + ".";
             showOnDisplay(secondOperand);
         }  
@@ -269,11 +318,14 @@ document.getElementById(`button30`).addEventListener("click",() => {
 
 const allClearButton = document.createElement("button");
 allClearButton.textContent = "AC";
+allClearButton.setAttribute("style","font-size:150%; color:white;");
 allClearButton.classList.add("button");
 allClearButton.addEventListener("click",() => {
 
         firstOperand = "";
         secondOperand = "";
+        firstOperandLenght = 0;
+        secondOperandLenght = 0;
         result = "";
         operator = "";
         currentDisplayOperand = 1;
@@ -284,6 +336,7 @@ allClearButton.addEventListener("click",() => {
 
 const deleteDigitButton = document.createElement("button");
 deleteDigitButton.textContent = "DEL";
+deleteDigitButton.setAttribute("style","font-size:150%;color:white;");
 deleteDigitButton.classList.add("button");
 deleteDigitButton.addEventListener("click",() => {
    
@@ -291,11 +344,13 @@ deleteDigitButton.addEventListener("click",() => {
     if(currentDisplayOperand === 1){
         let aux = firstOperand.slice(0,-1);
         firstOperand = aux;
+        firstOperandLenght -= 1;
         showOnDisplay(firstOperand);
     }
     if(currentDisplayOperand === 2){
         let aux = secondOperand.slice(0,-1);
         secondOperand = aux;
+        secondOperandLenght -= 1;
         showOnDisplay(secondOperand);
     }
     console.log(`currentDisplayOperand = ${currentDisplayOperand}`);
