@@ -42,7 +42,7 @@ function multiply(a,b){
 
 function operate(currentOperator, a, b){
 
-    console.log(`inside operate: currentOperator=${currentOperator} a=${a} b=${b}`);
+    console.log(`inside operate: operator= ${operator} currentOperator=${currentOperator} a=${a} b=${b}`);
     if(a === "" && currentOperator !== ""){
         console.log("first operand missing");
         return "";
@@ -80,7 +80,8 @@ function operate(currentOperator, a, b){
             result = multiply(a,b);
         }
         if(currentOperator === "="){
-            console.log("normal operation with =operator");
+        
+            console.log(`normal operate: operator= ${operator} currentOperator=${currentOperator} a=${a} b=${b}`);
             firstOperand = result;
             secondOperand = "";
             secondOperandLenght = 0;
@@ -128,6 +129,91 @@ function showOnDisplay(num){
     
 }
 
+function deleteDigit(){
+    if(currentDisplayOperand === 1){
+        let aux = firstOperand.slice(0,-1);
+        firstOperand = aux;
+        if(firstOperandLenght > 0)
+            firstOperandLenght -= 1;
+        showOnDisplay(firstOperand);
+    }
+    if(currentDisplayOperand === 2){
+        let aux = secondOperand.slice(0,-1);
+        secondOperand = aux;
+        if(secondOperandLenght > 0)
+            secondOperandLenght -= 1;
+        showOnDisplay(secondOperand);
+    }
+    //console.log(`currentDisplayOperand = ${currentDisplayOperand}`);
+    console.log(`inside deleteDigit function firstOperand = ${firstOperand} secondOperand ${secondOperand}  `);
+}
+
+function addNewDigit(newDigit){
+
+    if(currentDisplayOperand === 1){
+        if(firstOperand !== "0")
+            //firstOperand = firstOperand + 0;
+            firstOperand = maxLenghtOfNumber(firstOperand,newDigit);
+        else
+            firstOperand = "" + newDigit;
+        showOnDisplay(firstOperand);
+        //currentDisplayOperand = 2;
+    }
+        
+    if(currentDisplayOperand === 2){
+        if(secondOperand !== "0")
+            //secondOperand = secondOperand + 0;
+            secondOperand = maxLenghtOfNumber(secondOperand,newDigit);
+        else
+            secondOperand = "" + newDigit;
+        showOnDisplay(secondOperand);
+        //currentDisplayOperand = 1;
+    }
+    console.log(`inside addNewDigit:  currentDisplayOperand = ${currentDisplayOperand} firstOperand = ${firstOperand} secondOperand = ${secondOperand}  `);
+
+}
+function clearAll(){
+   
+    firstOperand = "";
+    secondOperand = "";
+    firstOperandLenght = 0;
+    secondOperandLenght = 0;
+    result = "";
+    operator = "";
+    currentDisplayOperand = 1;
+    console.log(`inside clearAll function: 
+    
+    operator = ${operator} 
+    currentDisplayOperand = ${currentDisplayOperand} 
+    firstOperand = ${firstOperand} 
+    secondOperand = ${secondOperand}`);
+
+    showOnDisplay("");
+}
+
+function addDot(){
+
+    if(currentDisplayOperand === 1){
+        if(!firstOperand.includes(".")){
+            if(firstOperand === "")
+                firstOperand = "0";
+            firstOperand = firstOperand + ".";
+            showOnDisplay(firstOperand);
+        }
+            
+    }   
+    if(currentDisplayOperand === 2){
+        if(!secondOperand.includes(".")){
+            if(secondOperand === "")
+                secondOperand = "0";
+            secondOperand = secondOperand + ".";
+            showOnDisplay(secondOperand);
+        }  
+    }
+    console.log(`inside decimal button function:  currentDisplayOperand = ${currentDisplayOperand} firstOperand = ${firstOperand} secondOperand = ${secondOperand}  `);
+
+}
+
 // make all the buttons
 for(let i = 0; i < 4; i++){
     
@@ -154,7 +240,7 @@ for(let i = 2; i >= 0; i--){
         //textButton.textContent = currentNumber;
        // textButton.setAttribute("style","font-size:150%;");
         //textButton.classList.add("buttonText");
-        const currentButton = document.getElementById(`button${i}${j}`);
+        let currentButton = document.getElementById(`button${i}${j}`);
        
         //currentButton.appendChild(textButton);
         currentButton.setAttribute("name",`button${currentNumber}`);
@@ -162,25 +248,12 @@ for(let i = 2; i >= 0; i--){
         currentButton.textContent = `${currentNumber}`;
         // making call to the event when select a number
 
-        document.getElementById(`button${i}${j}`).addEventListener("click",() => {
-            
-            if(currentDisplayOperand === 1){
-                if(firstOperand === "0")
-                    firstOperand = "";
-                //firstOperand = firstOperand + currentButton.getAttribute("value");
-                firstOperand = maxLenghtOfNumber(firstOperand,currentButton.getAttribute("value"));
-                showOnDisplay(firstOperand);
-                //currentDisplayOperand = 2;
-            }
-            if(currentDisplayOperand === 2){
-                if(secondOperand === "0")
-                    secondOperand = "";
-                //secondOperand = secondOperand + currentButton.getAttribute("value");
-                secondOperand = maxLenghtOfNumber(secondOperand,currentButton.getAttribute("value"));
-                showOnDisplay(secondOperand);
-                //currentDisplayOperand = 1;
-            }
-        
+        /*document.getElementById(`button${i}${j}`).addEventListener("click",() => {
+           addNewDigit(currentButton.getAttribute("value"));
+        });*/
+
+        currentButton.addEventListener("click",() => {
+           addNewDigit(currentButton.getAttribute("value"));
         });
 
         currentNumber += 1;
@@ -196,26 +269,8 @@ auxButton.classList.add("button");
 auxButton.textContent = "0";
 //document.getElementById(`button31`).appendChild(textButton1);
 auxButton.setAttribute("name","button0")
-auxButton.addEventListener("click",() => {
 
-    if(currentDisplayOperand === 1){
-        if(firstOperand !== "0")
-            //firstOperand = firstOperand + 0;
-            firstOperand = maxLenghtOfNumber(firstOperand,"0");
-        showOnDisplay(firstOperand);
-        //currentDisplayOperand = 2;
-    }
-        
-    if(currentDisplayOperand === 2){
-         if(secondOperand !== "0")
-            //secondOperand = secondOperand + 0;
-            secondOperand = maxLenghtOfNumber(secondOperand,"0");
-        showOnDisplay(secondOperand);
-        //currentDisplayOperand = 1;
-    }
-    console.log(`inside 0 button event:  currentDisplayOperand = ${currentDisplayOperand} firstOperand = ${firstOperand} secondOperand = ${secondOperand}  `);
-    
-});
+auxButton.addEventListener("click",() => addNewDigit("0"));
 
 // making text for operator and specials buttons
 
@@ -260,7 +315,7 @@ auxButton.addEventListener("click",() => {
     showOnDisplay(operate("subs", firstOperand, secondOperand));
 });
 
-// addition buttons
+// addition button
 auxButton = document.getElementById(`button33`);
 auxButton.classList.add("button");
 auxButton.textContent = "+";
@@ -285,79 +340,91 @@ auxButton.addEventListener("click",() => {
     showOnDisplay(operate("=", firstOperand, secondOperand))
 });
 
-// decimal operator
+// decimal "." operator
 
 auxButton = document.getElementById(`button30`);
 auxButton.classList.add("button");
 auxButton.textContent = ".";
 auxButton.setAttribute("name","button.");
-auxButton.addEventListener("click",() => {
+auxButton.addEventListener("click",() => addDot() );
 
 
-    if(currentDisplayOperand === 1){
-        if(!firstOperand.includes(".")){
-            if(firstOperand === "")
-                firstOperand = "0";
-            firstOperand = firstOperand + ".";
-            showOnDisplay(firstOperand);
-        }
-            
-    }   
-    if(currentDisplayOperand === 2){
-        if(!secondOperand.includes(".")){
-            if(secondOperand === "")
-                secondOperand = "0";
-            secondOperand = secondOperand + ".";
-            showOnDisplay(secondOperand);
-        }  
-    }
-    console.log(`inside decimal button event:  currentDisplayOperand = ${currentDisplayOperand} firstOperand = ${firstOperand} secondOperand = ${secondOperand}  `);
-});
-
-// create 2 buttons for erase all and delete 1 digit
+// AC button
 
 const allClearButton = document.createElement("button");
 allClearButton.textContent = "AC";
 allClearButton.setAttribute("style","font-size:150%; color:white;");
 allClearButton.classList.add("button");
-allClearButton.addEventListener("click",() => {
+allClearButton.addEventListener("click",() => clearAll() );
 
-        firstOperand = "";
-        secondOperand = "";
-        firstOperandLenght = 0;
-        secondOperandLenght = 0;
-        result = "";
-        operator = "";
-        currentDisplayOperand = 1;
-        showOnDisplay("");
-        console.log(`inside all clear button event:  currentDisplayOperand = ${currentDisplayOperand} firstOperand = ${firstOperand} secondOperand = ${secondOperand}  `);
 
-});
+// DEL button
 
 const deleteDigitButton = document.createElement("button");
 deleteDigitButton.textContent = "DEL";
 deleteDigitButton.setAttribute("style","font-size:150%;color:white;");
 deleteDigitButton.classList.add("button");
-deleteDigitButton.addEventListener("click",() => {
-   
-    
-    if(currentDisplayOperand === 1){
-        let aux = firstOperand.slice(0,-1);
-        firstOperand = aux;
-        firstOperandLenght -= 1;
-        showOnDisplay(firstOperand);
-    }
-    if(currentDisplayOperand === 2){
-        let aux = secondOperand.slice(0,-1);
-        secondOperand = aux;
-        secondOperandLenght -= 1;
-        showOnDisplay(secondOperand);
-    }
-    console.log(`currentDisplayOperand = ${currentDisplayOperand}`);
-    console.log(`inside deleteDigitButton event  firstOperand = ${firstOperand} secondOperand ${secondOperand}  `);
-});
+deleteDigitButton.addEventListener("click",() => deleteDigit() );
 
 
 eraseButtons.appendChild(allClearButton);
 eraseButtons.appendChild(deleteDigitButton);
+
+// keyboard support
+
+document.addEventListener("keydown",(event) =>{
+
+    //console.log(`inside event with key firstOperand = ${firstOperand} secondOperand ${secondOperand}  `);
+    document.activeElement.blur(); // remove focus if some button was clicked
+    console.log(`inside event with key: ${event.key}`);
+    switch(event.key){
+        case "0":
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+             console.log("inside number case");
+             addNewDigit(event.key);
+             break;
+        case "Backspace":
+             console.log("inside backspace case");
+             deleteDigit();
+             break;
+        case "Enter":
+             console.log("inside enter case");
+             showOnDisplay(operate("=", firstOperand, secondOperand));
+             break;
+        case "+":
+             console.log("inside + case");
+             showOnDisplay(operate("sum", firstOperand, secondOperand));
+             break;
+        case "-":
+             console.log("inside - case");
+             showOnDisplay(operate("subs", firstOperand, secondOperand));
+             break;
+        case "*":
+             console.log("inside * case");
+             showOnDisplay(operate("mult", firstOperand, secondOperand));
+             break;
+        case "/":
+             console.log("inside / case");
+             showOnDisplay(operate("div", firstOperand, secondOperand));
+             break;
+        case ".":
+             console.log("inside . case");
+             addDot();
+             break;
+        case "Delete":
+             console.log("inside Delete case");
+             clearAll();
+             break;
+
+
+    }
+});
 
