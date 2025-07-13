@@ -18,7 +18,7 @@ let secondOperandLenght = 0;
 let result = "";
 let operator = "";
 let currentDisplayOperand = 1;
-let firstStringOnDisplay = "Operation";
+let firstStringOnDisplay = "";
 const maxLengthOfNumberDisplay = 13;
 
 
@@ -192,7 +192,7 @@ function clearAll(){
     result = "";
     operator = "";
     currentDisplayOperand = 1;
-    firstStringOnDisplay = "Operation";
+    firstStringOnDisplay = "";
     showOnDisplay("");
 }
 
