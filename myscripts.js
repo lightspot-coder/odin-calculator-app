@@ -1,12 +1,15 @@
 const container = document.querySelector("#container");
 const display = document.querySelector("#display");
 const buttons = document.querySelector("#buttons");
-const displayContent = document.createElement("p");
+const displayFirstText = document.createElement("div");
+const displaySecondText= document.createElement("div");
+displayFirstText.setAttribute("id","displayFirstText");
+displayFirstText.setAttribute("style","font-size:150%;color:black;");
+displaySecondText.setAttribute("id","displaySecondText");
+displaySecondText.setAttribute("style","font-size:250%;color:black;");
+display.appendChild(displayFirstText);
+display.appendChild(displaySecondText);
 const eraseButtons = document.querySelector("#eraseButtons");
-
-displayContent.setAttribute("id","displayContent");
-displayContent.setAttribute("style","font-size:200%;color:black;");
-display.appendChild(displayContent);
 
 let firstOperand = "";
 let secondOperand = "";
@@ -15,15 +18,17 @@ let secondOperandLenght = 0;
 let result = "";
 let operator = "";
 let currentDisplayOperand = 1;
+let firstStringOnDisplay = "Operation";
+const maxLengthOfNumberDisplay = 15;
 
 
 
 function sum(a,b){
-    return `${+a + +b}`;
+    return `${(+(+a + +b).toFixed(3))}`;
 }
 
 function substract(a,b){
-    return `${+a - +b}`;
+    return `${(+(+a - +b).toFixed(3))}`;
 }
 
 function divide(a,b){
@@ -32,28 +37,30 @@ function divide(a,b){
         return "0";
     }
     else
-        return `${+a / +b}`;
+        return `${(+(+a / +b).toFixed(3))}`;
 }
 
 function multiply(a,b){
-    return `${+a * +b}`;
+    return `${(+(+a * +b).toFixed(3))}`;
 }
 
 
 function operate(currentOperator, a, b){
 
-    console.log(`inside operate: operator= ${operator} currentOperator=${currentOperator} a=${a} b=${b}`);
+    //console.log(`inside operate: operator= ${operator} currentOperator=${currentOperator} a=${a} b=${b}`);
     if(a === "" && currentOperator !== ""){
-        console.log("first operand missing");
+        //console.log("first operand missing");
         return "";
     }
     else if(a !== "" && b === "" && currentOperator === "="){
-        console.log("same operand");
+        //console.log("same operand");
         return a;
     }
     else if(a !== "" && b === "" && currentOperator !== "=" ){
 
-        console.log("waiting for the second operand");
+        //console.log("waiting for the second operand");
+        console.log(`second operator missing: a ${currentOperator} `);
+        firstStringOnDisplay = `${a} ${currentOperator}`;
         operator = currentOperator;
         currentDisplayOperand = 2;
         return "";
@@ -61,58 +68,65 @@ function operate(currentOperator, a, b){
     else if(a !== "" && b !== "" && operator !== "" && currentOperator !== ""){
         
         
-        if(operator === "sum"){
-            console.log("calling sum function");
+        if(operator === "+"){
             result = sum(a,b);
-
         }
-        if(operator === "subs"){
-            console.log("calling substract function");
+        if(operator === "-"){
             result = substract(a,b);
-
         }
-        if(operator === "div"){
-            console.log("calling divide function");
+        if(operator === "/"){
             result = divide(a,b);
         }
-        if(operator === "mult"){
-            console.log("calling multiply function");
+        if(operator === "*"){
             result = multiply(a,b);
         }
         if(currentOperator === "="){
-        
-            console.log(`normal operate: operator= ${operator} currentOperator=${currentOperator} a=${a} b=${b}`);
+
             firstOperand = result;
+            if(result.length > maxLengthOfNumberDisplay) // don't overflow decimal
+                firstOperand = (+result).toExponential(3);
+            firstOperandLenght = firstOperand.length;
             secondOperand = "";
             secondOperandLenght = 0;
-            operator = "";
+            
             currentDisplayOperand = 1;
-            return result;
+            console.log(`normal operation: a ${operator} b ${currentOperator} c`);
+            firstStringOnDisplay = `${a} ${operator} ${b} ${currentOperator}`;
+            operator = "";
+            console.log(`${a} + ${b} = ${result}`);
+            return firstOperand;
         }
         firstOperand = result;
+        if(result.length > maxLengthOfNumberDisplay) // don't overflow decimal
+            firstOperand = (+result).toExponential(3);
+        firstOperandLenght = firstOperand.length;
         secondOperand = "";
         secondOperandLenght = 0;
-        currentDisplayOperand = 1;
-        operator = currentOperator;
         currentDisplayOperand = 2;
-        console.log("chain operation, waiting for second number");
+        console.log(`chain operation: a ${operator} b ${currentOperator} c`);
+        firstStringOnDisplay = `${result} ${currentOperator}`;
+        operator = currentOperator;
+        console.log(`${result} ${operator}`);
         
 
     }
-    return result;
+    firstOperand = result;
+    if(result.length > maxLengthOfNumberDisplay) // don't overflow decimal
+            firstOperand = (+result).toExponential(3);
+    return firstOperand;
 }
 
 function maxLenghtOfNumber(currentNumber, newDigit){
 
 
     if(currentDisplayOperand === 1){
-        if(firstOperandLenght < 15){
+        if(firstOperandLenght < maxLengthOfNumberDisplay){
             firstOperandLenght += 1;
             return currentNumber + newDigit;
         }
     }
     if(currentDisplayOperand === 2){
-         if(secondOperandLenght < 15){
+         if(secondOperandLenght < maxLengthOfNumberDisplay){
             secondOperandLenght += 1;
             return currentNumber + newDigit;
         }
@@ -124,8 +138,8 @@ function maxLenghtOfNumber(currentNumber, newDigit){
 
 function showOnDisplay(num){
     
-
-    (document.getElementById("displayContent")).textContent = `${num}`;
+    (document.getElementById("displayFirstText")).textContent = `${firstStringOnDisplay}`;
+    (document.getElementById("displaySecondText")).textContent = `${num}`;
     
 }
 
@@ -144,32 +158,29 @@ function deleteDigit(){
             secondOperandLenght -= 1;
         showOnDisplay(secondOperand);
     }
-    //console.log(`currentDisplayOperand = ${currentDisplayOperand}`);
-    console.log(`inside deleteDigit function firstOperand = ${firstOperand} secondOperand ${secondOperand}  `);
+    
+    //console.log(`inside deleteDigit function firstOperand = ${firstOperand} secondOperand ${secondOperand}  `);
 }
 
 function addNewDigit(newDigit){
 
     if(currentDisplayOperand === 1){
         if(firstOperand !== "0")
-            //firstOperand = firstOperand + 0;
             firstOperand = maxLenghtOfNumber(firstOperand,newDigit);
         else
             firstOperand = "" + newDigit;
         showOnDisplay(firstOperand);
-        //currentDisplayOperand = 2;
+        
     }
         
     if(currentDisplayOperand === 2){
         if(secondOperand !== "0")
-            //secondOperand = secondOperand + 0;
             secondOperand = maxLenghtOfNumber(secondOperand,newDigit);
         else
             secondOperand = "" + newDigit;
         showOnDisplay(secondOperand);
-        //currentDisplayOperand = 1;
     }
-    console.log(`inside addNewDigit:  currentDisplayOperand = ${currentDisplayOperand} firstOperand = ${firstOperand} secondOperand = ${secondOperand}  `);
+    //console.log(`inside addNewDigit:  currentDisplayOperand = ${currentDisplayOperand} firstOperand = ${firstOperand} secondOperand = ${secondOperand}  `);
 
 }
 function clearAll(){
@@ -181,13 +192,7 @@ function clearAll(){
     result = "";
     operator = "";
     currentDisplayOperand = 1;
-    console.log(`inside clearAll function: 
-    
-    operator = ${operator} 
-    currentDisplayOperand = ${currentDisplayOperand} 
-    firstOperand = ${firstOperand} 
-    secondOperand = ${secondOperand}`);
-
+    firstStringOnDisplay = "Operation";
     showOnDisplay("");
 }
 
@@ -210,7 +215,7 @@ function addDot(){
             showOnDisplay(secondOperand);
         }  
     }
-    console.log(`inside decimal button function:  currentDisplayOperand = ${currentDisplayOperand} firstOperand = ${firstOperand} secondOperand = ${secondOperand}  `);
+    //console.log(`inside decimal button function:  currentDisplayOperand = ${currentDisplayOperand} firstOperand = ${firstOperand} secondOperand = ${secondOperand}  `);
 
 }
 
@@ -236,22 +241,10 @@ let currentNumber = 1;
 for(let i = 2; i >= 0; i--){
     for(let j = 0; j < 3; j++){
 
-        //let textButton = document.createElement("p");
-        //textButton.textContent = currentNumber;
-       // textButton.setAttribute("style","font-size:150%;");
-        //textButton.classList.add("buttonText");
         let currentButton = document.getElementById(`button${i}${j}`);
-       
-        //currentButton.appendChild(textButton);
         currentButton.setAttribute("name",`button${currentNumber}`);
         currentButton.setAttribute("value",`${currentNumber}`);
         currentButton.textContent = `${currentNumber}`;
-        // making call to the event when select a number
-
-        /*document.getElementById(`button${i}${j}`).addEventListener("click",() => {
-           addNewDigit(currentButton.getAttribute("value"));
-        });*/
-
         currentButton.addEventListener("click",() => {
            addNewDigit(currentButton.getAttribute("value"));
         });
@@ -261,18 +254,12 @@ for(let i = 2; i >= 0; i--){
 }
 
 // making text for button 0
-//let textButton1 = document.createElement("p");
-//textButton1.textContent = 0;
-//textButton1.classList.add("button");
+
 let auxButton = document.getElementById(`button31`);
 auxButton.classList.add("button");
 auxButton.textContent = "0";
-//document.getElementById(`button31`).appendChild(textButton1);
 auxButton.setAttribute("name","button0")
-
 auxButton.addEventListener("click",() => addNewDigit("0"));
-
-// making text for operator and specials buttons
 
 // divide button
 
@@ -283,9 +270,7 @@ auxButton.classList.add("button");
 auxButton.textContent = "/";
 auxButton.addEventListener("click",() => {
 
-     
-    //operator = "div";
-    showOnDisplay(operate("div", firstOperand, secondOperand));
+    showOnDisplay(operate("/", firstOperand, secondOperand));
     
 });
 
@@ -297,9 +282,7 @@ auxButton.textContent = "*";
 auxButton.setAttribute("name","button*");
 auxButton.addEventListener("click",() =>{
 
-    //operator = "mult";
-    showOnDisplay(operate("mult", firstOperand, secondOperand));
-    
+    showOnDisplay(operate("*", firstOperand, secondOperand));
 
 });
 
@@ -311,8 +294,7 @@ auxButton.textContent = "-";
 auxButton.setAttribute("name","button-");
 auxButton.addEventListener("click",() => {
     
-    //operator = "subs";
-    showOnDisplay(operate("subs", firstOperand, secondOperand));
+    showOnDisplay(operate("-", firstOperand, secondOperand));
 });
 
 // addition button
@@ -322,10 +304,7 @@ auxButton.textContent = "+";
 auxButton.setAttribute("name","button+");
 auxButton.addEventListener("click",() => {
 
-    
-    //operator = "sum";
-    showOnDisplay(operate("sum", firstOperand, secondOperand));
-        
+    showOnDisplay(operate("+", firstOperand, secondOperand)); 
 
 });
 
@@ -365,8 +344,6 @@ deleteDigitButton.textContent = "DEL";
 deleteDigitButton.setAttribute("style","font-size:150%;color:white;");
 deleteDigitButton.classList.add("button");
 deleteDigitButton.addEventListener("click",() => deleteDigit() );
-
-
 eraseButtons.appendChild(allClearButton);
 eraseButtons.appendChild(deleteDigitButton);
 
@@ -374,9 +351,8 @@ eraseButtons.appendChild(deleteDigitButton);
 
 document.addEventListener("keydown",(event) =>{
 
-    //console.log(`inside event with key firstOperand = ${firstOperand} secondOperand ${secondOperand}  `);
     document.activeElement.blur(); // remove focus if some button was clicked
-    console.log(`inside event with key: ${event.key}`);
+    
     switch(event.key){
         case "0":
         case "1":
@@ -388,39 +364,39 @@ document.addEventListener("keydown",(event) =>{
         case "7":
         case "8":
         case "9":
-             console.log("inside number case");
+             console.log(`keyboard:${event.key}`);
              addNewDigit(event.key);
              break;
         case "Backspace":
-             console.log("inside backspace case");
+             console.log(`keyboard:${event.key}`);
              deleteDigit();
              break;
         case "Enter":
-             console.log("inside enter case");
+             console.log(`keyboard:${event.key}`);
              showOnDisplay(operate("=", firstOperand, secondOperand));
              break;
         case "+":
-             console.log("inside + case");
+             console.log(`keyboard:${event.key}`);
              showOnDisplay(operate("sum", firstOperand, secondOperand));
              break;
         case "-":
-             console.log("inside - case");
+             console.log(`keyboard:${event.key}`);
              showOnDisplay(operate("subs", firstOperand, secondOperand));
              break;
         case "*":
-             console.log("inside * case");
+             console.log(`keyboard:${event.key}`);
              showOnDisplay(operate("mult", firstOperand, secondOperand));
              break;
         case "/":
-             console.log("inside / case");
+             console.log(`keyboard:${event.key}`);
              showOnDisplay(operate("div", firstOperand, secondOperand));
              break;
         case ".":
-             console.log("inside . case");
+             console.log(`keyboard:${event.key}`);
              addDot();
              break;
         case "Delete":
-             console.log("inside Delete case");
+             console.log(`keyboard:${event.key}`);
              clearAll();
              break;
 
