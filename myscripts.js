@@ -377,19 +377,19 @@ document.addEventListener("keydown",(event) =>{
              break;
         case "+":
              console.log(`keyboard:${event.key}`);
-             showOnDisplay(operate("sum", firstOperand, secondOperand));
+             showOnDisplay(operate("+", firstOperand, secondOperand));
              break;
         case "-":
              console.log(`keyboard:${event.key}`);
-             showOnDisplay(operate("subs", firstOperand, secondOperand));
+             showOnDisplay(operate("-", firstOperand, secondOperand));
              break;
         case "*":
              console.log(`keyboard:${event.key}`);
-             showOnDisplay(operate("mult", firstOperand, secondOperand));
+             showOnDisplay(operate("*", firstOperand, secondOperand));
              break;
         case "/":
              console.log(`keyboard:${event.key}`);
-             showOnDisplay(operate("div", firstOperand, secondOperand));
+             showOnDisplay(operate("/", firstOperand, secondOperand));
              break;
         case ".":
              console.log(`keyboard:${event.key}`);
