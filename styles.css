@@ -14,16 +14,22 @@
 
 .displayAndButtonsContainer{
 
+    display: flex;
+    flex-direction: column;
+   
     border-color:black;
     background-color: black;
     padding: 20px 20px;
     border-radius: 12px;
+    
+
 }
 
 #display{
 
-    width: 320px;
-    height: 80px;;
+    width: 300px;
+    height: 100px;
+    padding: 10px 10px;
     border-style: solid;
     border-width: thin;
     border-color:black;
@@ -31,29 +37,33 @@
     display: flex;
     flex-direction: column;
     align-items: self-end;
-    gap:10px;
+    justify-content: space-between;
 }
 
 #eraseButtons{
     display: flex;
-    justify-items: flex-end;
-    width: 320px;
+    justify-content: flex-start;
+    width: 300px;
     height: 80px;
     gap:10px;
     margin-top: 10px;
+    justify-self: flex-start;
+    margin-left: 5px;
     
 }
+
 #buttons{
 
     display: flex;
     flex-direction: column;
-    gap:5px;
+    gap:10px;
     
 }
 
 .buttonRow{
     display: flex;
-    justify-content: space-between; 
+    justify-content: center;
+    gap:10px;
 }
 
 button{
@@ -66,9 +76,8 @@ button{
     border-radius: 12px;
     color: white;
     font-size: 200%;
+    
 }
-
-
 
 button:active {
   background-color: grey;

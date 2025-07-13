@@ -4,7 +4,7 @@ const buttons = document.querySelector("#buttons");
 const displayFirstText = document.createElement("div");
 const displaySecondText= document.createElement("div");
 displayFirstText.setAttribute("id","displayFirstText");
-displayFirstText.setAttribute("style","font-size:150%;color:black;");
+displayFirstText.setAttribute("style","font-size:150%;color:black;text-align:end;");
 displaySecondText.setAttribute("id","displaySecondText");
 displaySecondText.setAttribute("style","font-size:250%;color:black;");
 display.appendChild(displayFirstText);
@@ -19,7 +19,7 @@ let result = "";
 let operator = "";
 let currentDisplayOperand = 1;
 let firstStringOnDisplay = "Operation";
-const maxLengthOfNumberDisplay = 15;
+const maxLengthOfNumberDisplay = 13;
 
 
 
@@ -219,7 +219,8 @@ function addDot(){
 
 }
 
-// make all the buttons
+// making all number and operator buttons and adding a id 
+
 for(let i = 0; i < 4; i++){
     
     const buttonRow = document.createElement("div");
@@ -235,7 +236,7 @@ for(let i = 0; i < 4; i++){
     buttons.appendChild(buttonRow);
 }
 
-// making text for buttons from 1 to 9
+// buttons 1 to 9
 
 let currentNumber = 1;
 for(let i = 2; i >= 0; i--){
@@ -253,7 +254,7 @@ for(let i = 2; i >= 0; i--){
     }
 }
 
-// making text for button 0
+// button 0
 
 let auxButton = document.getElementById(`button31`);
 auxButton.classList.add("button");
